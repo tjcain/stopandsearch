@@ -11,31 +11,26 @@ import (
 )
 
 func main() {
-	// customClient := http.Client{Timeout: time.Second * 120}
-	// client := ukpolice.NewClient(&customClient)
-	// db := &pgStore{db: nil}
-
-	// UpdateRequired(db, client)
 
 }
 
 // UpdateRequired returns true if the current dataset is out of date.
 func UpdateRequired(d DataStore, c *ukpolice.Client) bool {
-	const shortDate = "2006-01"
+	const dateFormat = "2006-01"
 
 	storedDate := d.GetDate()
-	t, err := time.Parse(shortDate, storedDate)
+	t, err := time.Parse(dateFormat, storedDate)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	avaliable, _, err := getAvaliable(c)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln("getAvaliable()", err)
 	}
 
 	for _, dates := range avaliable {
-		dt, err := time.Parse(shortDate, dates.Date)
+		dt, err := time.Parse(dateFormat, dates.Date)
 		if err != nil {
 			log.Fatalln(err)
 		}
