@@ -10,37 +10,43 @@ import (
 	"github.com/tjcain/ukpolice"
 )
 
+const dateFormat = "2006-01"
+
 func main() {
 
 }
 
-// UpdateRequired returns true if the current dataset is out of date.
-func UpdateRequired(d DataStore, c *ukpolice.Client) bool {
-	const dateFormat = "2006-01"
-
+// GetUpdateSlice returns a slice of avaliability information newer than that
+// currently stored in the DataStore. Nil is returned if the DataStore is up to date.
+func GetUpdateSlice(d DataStore, c *ukpolice.Client) ([]ukpolice.AvailabilityInfo, error) {
 	storedDate := d.GetDate()
 	t, err := time.Parse(dateFormat, storedDate)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return nil, err
 	}
 
-	avaliable, _, err := getAvaliable(c)
+	avaliable, _, err := c.Availability.GetAvailabilityInfo(context.Background())
 	if err != nil {
-		log.Fatalln("getAvaliable()", err)
+		log.Println("getAvaliable()", err)
+		return nil, err
 	}
+
+	var avaliabilities []ukpolice.AvailabilityInfo
 
 	for _, dates := range avaliable {
 		dt, err := time.Parse(dateFormat, dates.Date)
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
+			return nil, err
 		}
 
 		if t.Before(dt) {
-			return true
+			avaliabilities = append(avaliabilities, dates)
 		}
 	}
 
-	return false
+	return avaliabilities, nil
 }
 
 // DataStore describes a database
@@ -52,11 +58,7 @@ type pgStore struct {
 	db *sqlx.DB
 }
 
-func (pg *pgStore) GetDate() string {
-	// do stuff
-	return ""
-}
-
-func getAvaliable(client *ukpolice.Client) ([]ukpolice.AvailabilityInfo, *ukpolice.Response, error) {
-	return client.Availability.GetAvailabilityInfo(context.Background())
-}
+// func (pg *pgStore) GetDate() string {
+// 	// do stuff
+// 	return ""
+// }
