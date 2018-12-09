@@ -2,18 +2,48 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/robfig/cron"
 	"github.com/tjcain/ukpolice"
 )
 
 const dateFormat = "2006-01"
 
 func main() {
+	var gracefulStop = make(chan os.Signal)
+	signal.Notify(gracefulStop, syscall.SIGTERM)
+	signal.Notify(gracefulStop, syscall.SIGINT)
 
+	// db := pgStore{db: nil}
+	// client := ukpolice.NewClient(&http.Client{})
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	c := cron.New()
+	c.AddFunc("@every 2s", func() { fmt.Println("Every second") })
+	c.Start()
+
+	// u, err := GetUpdateSlice(db, client)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+
+	// for _, f := range u {
+	// 	fmt.Println(f.Date)
+	// }
+	sig := <-gracefulStop
+	fmt.Printf("caught sig: %+v", sig)
+	fmt.Println("Wait for 2 second to finish processing")
+	time.Sleep(2 * time.Second)
+	os.Exit(0)
 }
 
 // GetUpdateSlice returns a slice of avaliability information newer than that
@@ -58,7 +88,7 @@ type pgStore struct {
 	db *sqlx.DB
 }
 
-// func (pg *pgStore) GetDate() string {
-// 	// do stuff
-// 	return ""
-// }
+func (pg pgStore) GetDate() string {
+	// do stuff
+	return "2017-02"
+}
