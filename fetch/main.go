@@ -23,6 +23,9 @@ func main() {
 	signal.Notify(gracefulStop, syscall.SIGTERM)
 	signal.Notify(gracefulStop, syscall.SIGINT)
 
+	config := LoadConfig()
+	fmt.Println(config)
+
 	// db := pgStore{db: nil}
 	// client := ukpolice.NewClient(&http.Client{})
 	wg := sync.WaitGroup{}
