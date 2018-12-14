@@ -2,52 +2,53 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
+	"net/http"
 	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/robfig/cron"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tjcain/ukpolice"
 )
 
 const dateFormat = "2006-01"
 
-func main() {
-	var gracefulStop = make(chan os.Signal)
-	signal.Notify(gracefulStop, syscall.SIGTERM)
-	signal.Notify(gracefulStop, syscall.SIGINT)
-
-	config := LoadConfig()
-	fmt.Println(config)
-
-	// db := pgStore{db: nil}
-	// client := ukpolice.NewClient(&http.Client{})
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	c := cron.New()
-	c.AddFunc("@every 2s", func() { fmt.Println("Every second") })
-	c.Start()
-
-	// u, err := GetUpdateSlice(db, client)
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
-
-	// for _, f := range u {
-	// 	fmt.Println(f.Date)
-	// }
-	sig := <-gracefulStop
-	fmt.Printf("caught sig: %+v", sig)
-	fmt.Println("Wait for 2 second to finish processing")
-	time.Sleep(2 * time.Second)
-	os.Exit(0)
+type Fetch struct {
+	db DataStore
+	// cfg Config
 }
+
+func main() {
+	// c := time.Tick(1 * time.Minute)
+	// for now := range c {
+	// 	fmt.Printf("%v %s\n", now, statusUpdate())
+	// }
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(":2112", nil)
+}
+
+// New returns a Fetch with the sql.DB set with the postgres
+// DB connection string in the configuration
+// func New() (*Fetch, error) {
+// 	cfg, err := LoadConfig()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	var fetch Fetch
+
+// 	db, err := sql.Open("postgres", fmt.Sprintf(
+// 		"user=%s password=%s dbname=%s host=%s port=%s sslmode=disable",
+// 		cfg.Database.User, cfg.Database.Password, cfg.Database.Database,
+// 		cfg.Database.Host, cfg.Database.Port))
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return Fetch{db: db}, nil
+// }
+
+func statusUpdate() string { return "stats" }
 
 // GetUpdateSlice returns a slice of avaliability information newer than that
 // currently stored in the DataStore. Nil is returned if the DataStore is up to date.

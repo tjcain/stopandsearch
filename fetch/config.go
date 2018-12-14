@@ -7,20 +7,20 @@ import (
 )
 
 // LoadConfig attempts to load .config
-func LoadConfig() Config {
+func LoadConfig() (*Config, error) {
 	f, err := os.Open(".config")
 	if err != nil {
 		fmt.Println("Using the default configs...")
-		return DefaultConfig()
+		return DefaultConfig(), nil
 	}
 
 	var c Config
 	d := json.NewDecoder(f)
 	if err := d.Decode(&c); err != nil {
-		panic(err)
+		return nil, err
 	}
 	fmt.Println("Successfully loaded .config")
-	return c
+	return &c, nil
 }
 
 // Config holds start up configuration variables
@@ -31,8 +31,8 @@ type Config struct {
 }
 
 // DefaultConfig generates development environment variables
-func DefaultConfig() Config {
-	return Config{
+func DefaultConfig() *Config {
+	return &Config{
 		Env:      "dev",
 		Database: DefaultPostgresConfig(),
 	}
@@ -44,7 +44,7 @@ type PostgresConfig struct {
 	Port     int    `json:"port"`
 	User     string `json:"user"`
 	Password string `json:"password"`
-	Name     string `json:"name"`
+	Database string `json:"database"`
 }
 
 // DefaultPostgresConfig returns a PostgresConfig with default values
@@ -54,6 +54,6 @@ func DefaultPostgresConfig() PostgresConfig {
 		Port:     5432,
 		User:     "postgres",
 		Password: "",
-		Name:     "stopandsearch",
+		Database: "stopandsearch_test",
 	}
 }
