@@ -1,8 +1,10 @@
 package server
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 )
 
 var (
@@ -15,11 +17,16 @@ var (
 
 // Config holds the configuration options for the application.
 type Config struct {
-	Bind        string `json:"bind,omitempty"`
-	LogLevel    string `json:"log_level,omitempty"`
-	CacheMaxAge int    `json:"cache_max_age,omitempty"`
-	TmpDir      string `json:"tmp_dir,omitempty"`
-	Limits      struct {
+	Bind string `json:"bind,omitempty"`
+
+	LogLevel string `json:"log_level,omitempty"`
+	LogFile  string `json:"log_file"`
+
+	CacheMaxAge int `json:"cache_max_age,omitempty"`
+
+	TmpDir string `json:"tmp_dir,omitempty"`
+
+	Limits struct {
 		// any limits will go here
 	} `json:"limits,omitempty"`
 
@@ -31,9 +38,9 @@ type Config struct {
 		Database string `json:"database,omitempty"`
 	} `json:"pg_db,omitempty"`
 
-	StatsD struct {
+	Prometheus struct {
 		//TODO: Add prometheus configuration here
-	} `json:"stats_d,omitempty"`
+	} `json:"prometheus_d,omitempty"`
 
 	// Mail
 	// Boltdb
@@ -41,8 +48,9 @@ type Config struct {
 
 func init() {
 	cf := Config{
-		Bind:        ":4000",
+		Bind:        "0.0.0.0:4000",
 		LogLevel:    "INFO",
+		LogFile:     "",
 		CacheMaxAge: 0,
 		TmpDir:      "",
 	}
@@ -62,8 +70,27 @@ func NewConfig() *Config {
 	return &cf
 }
 
+// NewConfigFromFile loads a new configuration from a JSON file
+func NewConfigFromFile(confFile string) (*Config, error) {
+	f, err := os.Open(confFile)
+	if err != nil {
+		return nil, err
+	}
+
+	c := NewConfig()
+
+	d := json.NewDecoder(f)
+	if err := d.Decode(&c); err != nil {
+		return nil, err
+	}
+
+	return c, nil
+
+}
+
+// GetDB returns a new database
 func (cf *Config) GetDB() (*DB, error) {
-	s := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable",
+	s := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable",
 		cf.PgDB.User, cf.PgDB.Password, cf.PgDB.Database,
 		cf.PgDB.Host, cf.PgDB.Port)
 	db, err := NewPostgresDB(s)
@@ -74,6 +101,5 @@ func (cf *Config) GetDB() (*DB, error) {
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
-
 	return db, nil
 }
