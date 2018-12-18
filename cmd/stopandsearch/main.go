@@ -2,21 +2,25 @@ package main
 
 import (
 	"log"
-	"net/http"
+	"stopandsearch/pkg/storage/postgres"
+)
 
-	"stopandsearch/pkg/server"
+const (
+	host     = "localhost"
+	port     = 5432
+	password = ""
+	user     = "postgres"
+	database = "stopandsearch_test"
 )
 
 func main() {
-	// get config
-	conf := server.NewConfig()
+	// set up storage
+	// connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable",
+	// 	user, password, database, host, port)
 
-	// start server
-	srv := server.New(conf)
-	if err := srv.Configure(); err != nil {
-		log.Fatal(err)
+	_, err := postgres.NewPostgresDB()
+	if err != nil {
+		log.Fatalf("Could not connect to db: %s", err)
 	}
-
-	http.ListenAndServe(srv.Config.Bind, srv.NewRouter())
 
 }
