@@ -3,24 +3,25 @@ package main
 import (
 	"log"
 	"stopandsearch/pkg/storage/postgres"
+
+	"upper.io/db.v3/postgresql"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	password = ""
-	user     = "postgres"
-	database = "stopandsearch_test"
-)
+// This should come from some sort of config
+var settings = postgresql.ConnectionURL{
+	Database: `stopandsearch_test`,
+	Host:     `localhost`,
+	User:     `postgres`,
+}
 
 func main() {
 	// set up storage
-	// connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable",
-	// 	user, password, database, host, port)
-
-	_, err := postgres.NewPostgresDB()
+	db, err := postgres.NewPostgresDB(settings)
 	if err != nil {
 		log.Fatalf("Could not connect to db: %s", err)
 	}
+
+	db.Ping()
+	log.Println("Connected and pinged")
 
 }
