@@ -21,7 +21,13 @@ func main() {
 		log.Fatalf("Could not connect to db: %s", err)
 	}
 
-	db.Ping()
-	log.Println("Connected and pinged")
-
+	defer db.Close()
+	v := map[string][]interface{}{
+		"age_range": []interface{}{"10-17", "25-34", "under 10", "Not Stated", "foo"},
+		"ethnicity": []interface{}{"White", "Black (or Black British)"},
+		"time":      []interface{}{"2018-02-01", "2018-03-1"},
+	}
+	c := "age_range"
+	db.GetSchemaCount(c, v)
+	// db.SimpleQuery()
 }

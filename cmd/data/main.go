@@ -15,11 +15,13 @@ import (
 )
 
 // This should come from some sort of config
-var settings = postgresql.ConnectionURL{
-	Database: `stopandsearch_test`,
-	Host:     `localhost`,
-	User:     `postgres`,
-}
+const (
+	host     = "localhost"
+	port     = 5432
+	password = ""
+	user     = "postgres"
+	database = "stopandsearch_test"
+)
 
 var records, errs, retries int
 var wg sync.WaitGroup
@@ -28,11 +30,23 @@ var mutex = &sync.Mutex{}
 func main() {
 	start := time.Now()
 	// set up Storage
+	var settings = postgresql.ConnectionURL{
+		Database: `stopandsearch_test`,
+		Host:     `localhost`,
+		User:     `postgres`,
+	}
 	db, err := postgres.NewPostgresDB(settings)
 	if err != nil {
 		log.Fatalf("Could not connect to db: %s", err)
 	}
 	defer db.Close()
+	// reset db
+	log.Println("RESETTING DATABASE")
+	err = db.DestructiveReset("wm_test_ss")
+	if err != nil {
+		log.Fatalf("could not reset DB %v", err)
+	}
+
 	// defined clients
 	customClient := http.Client{Timeout: time.Second * 120}
 	client := ukpolice.NewClient(&customClient)

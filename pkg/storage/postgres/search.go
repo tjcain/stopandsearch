@@ -54,3 +54,11 @@ func normalizeEthnicity(ethnicity string) string {
 
 	return ethnicityNotStated
 }
+
+func normalizeAge(age string) string {
+	if len(age) != 0 {
+		return age
+	}
+
+	return "Not Stated"
+}
