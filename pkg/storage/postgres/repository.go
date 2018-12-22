@@ -3,6 +3,8 @@ package postgres
 import (
 	"fmt"
 	"log"
+	"net/url"
+	"stopandsearch/pkg/stats"
 	"strings"
 
 	"github.com/tjcain/ukpolice"
@@ -69,8 +71,8 @@ func (s *Storage) StoreSearch(search ukpolice.Search) error {
 	return err
 }
 
-// GetSchemaCount @TODO: REFACTOR THIS JUNK!!!
-func (s *Storage) GetSchemaCount(column string, properties map[string][]interface{}) {
+// GetColumnCount @TODO: REFACTOR THIS JUNK!!!
+func (s *Storage) GetColumnCount(column string, properties url.Values) ([]stats.Stat, error) {
 	columns := []string{"age_range", "force", "month_year", "ethnicity",
 		"search_happened", "outcome", "gender", "outcome_linked_to_object",
 		"object_of_search"}
@@ -89,7 +91,6 @@ func (s *Storage) GetSchemaCount(column string, properties map[string][]interfac
 		if len(w) != 0 {
 			// Make (foo=$1 OR bar=$2).. etc
 			str := fmt.Sprintf("(%s)", strings.Join(w, " OR "))
-			log.Printf("STR: %s", str)
 			where = append(where, str)
 		}
 	}
@@ -104,12 +105,7 @@ func (s *Storage) GetSchemaCount(column string, properties map[string][]interfac
 		}
 	}
 
-	type dbReturn struct {
-		Name  string `db:"name"`
-		Count int    `db:"count"`
-	}
-
-	var r []dbReturn
+	var stat []stats.Stat
 
 	// @TODO: Remove hard coding
 	q := fmt.Sprintf(`
@@ -119,16 +115,18 @@ func (s *Storage) GetSchemaCount(column string, properties map[string][]interfac
 	 WHERE %s GROUP BY %s;`,
 		column, column,
 		strings.Join(where, " AND "), column)
-
 	rows, err := s.db.Query(q, values...)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	iter := db.NewIterator(rows)
-	iter.All(&r)
+	iter.All(&stat)
+	// log.Println(stat)
+
+	return stat, nil
 }
 
-// ========== TEMPORARY TOOLS ================
+// ========== TEMPORARY TOOLS ==========
 
 // DestructiveReset drops and remakes a table
 func (s *Storage) DestructiveReset(tname string) error {
