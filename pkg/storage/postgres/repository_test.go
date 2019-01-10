@@ -38,8 +38,8 @@ func Test_GetColumnCount(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ColumnCount failed: %s", err)
 	}
-	if !reflect.DeepEqual(got, []stats.Stat{{"asian", 1}, {"white", 3}}) {
-		t.Errorf("ColumnCount: Expected %v got %v", []stats.Stat{{"asian", 1}, {"white", 3}}, got)
+	if !reflect.DeepEqual(got, []stats.Stat{{Name: "asian", Count: 1}, {Name: "white", Count: 3}}) {
+		t.Errorf("ColumnCount: Expected %v got %v", []stats.Stat{{Name: "asian", Count: 1}, {Name: "white", Count: 3}}, got)
 	}
 }
 
