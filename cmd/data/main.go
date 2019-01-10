@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"stopandsearch/pkg/Storage/postgres"
 	"sync"
 	"time"
 
+	"github.com/tjcain/stopandsearch/pkg/storage/postgres"
+
 	"github.com/tjcain/ukpolice"
-	"upper.io/db.v3/postgresql"
 )
 
 // This should come from some sort of config
@@ -30,16 +30,7 @@ var mutex = &sync.Mutex{}
 func main() {
 	start := time.Now()
 	// set up Storage
-	var settings = postgresql.ConnectionURL{
-		Database: `stopandsearch_test`,
-		Host:     `localhost`,
-		User:     `postgres`,
-	}
-	db, err := postgres.NewPostgresDB(settings)
-	if err != nil {
-		log.Fatalf("Could not connect to db: %s", err)
-	}
-	defer db.Close()
+	db := postgres.NewPostgresDB()
 	// reset db
 	// log.Println("RESETTING DATABASE")
 	// err = db.DestructiveReset("wm_test_ss")
