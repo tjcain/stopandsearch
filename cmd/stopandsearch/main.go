@@ -1,11 +1,11 @@
 package main
 
 import (
-	"log"
 	"net/http"
-	"stopandsearch/pkg/http/rest"
-	"stopandsearch/pkg/stats"
-	"stopandsearch/pkg/storage/postgres"
+
+	"github.com/tjcain/stopandsearch/pkg/http/rest"
+	"github.com/tjcain/stopandsearch/pkg/stats"
+	"github.com/tjcain/stopandsearch/pkg/storage/postgres"
 
 	"upper.io/db.v3/postgresql"
 )
@@ -19,10 +19,7 @@ var settings = postgresql.ConnectionURL{
 
 func main() {
 	// set up storage
-	db, err := postgres.NewPostgresDB(settings)
-	if err != nil {
-		log.Fatalf("Could not connect to db: %s", err)
-	}
+	db := postgres.NewPostgresDB()
 	defer db.Close()
 
 	// set up services.
