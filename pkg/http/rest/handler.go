@@ -2,19 +2,36 @@ package rest
 
 // define our router here.
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
-	"stopandsearch/pkg/stats"
+
+	"github.com/tjcain/stopandsearch/pkg/stats"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 )
 
 // Handler returns a chi router to be used in http.ListenAndServe.
 func Handler(s stats.Service) chi.Router {
 	r := chi.NewRouter()
+
+	// Basic CORS
+	cors := cors.New(cors.Options{
+		// AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins: []string{"*"},
+		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	})
+
+	r.Use(cors.Handler)
 
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
@@ -34,23 +51,54 @@ func Handler(s stats.Service) chi.Router {
 	})
 
 	// RESTy routes
-	r.Route("/api", func(r chi.Router) {
-		r.Get("/stats/{column}", listStats(s))
+	r.Route("/api/stats", func(r chi.Router) {
+		r.Use(ParseQueryParams)
+		r.Get("/stats/{column}", columnStats(s))
+		r.Get("/count", count(s))
 	})
 
 	return r
 }
 
-func listStats(s stats.Service) func(w http.ResponseWriter, r *http.Request) {
+func columnStats(s stats.Service) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if err := r.ParseForm(); err != nil {
-			log.Fatalln(err)
-		}
 		column := chi.URLParam(r, "column")
-		s, err := s.GetStats(column, r.Form)
+		query, values := getParamsFromContext(r.Context())
+
+		s, err := s.GetColumnCount(column, query, values)
 		if err != nil {
 			log.Fatalln(err)
 		}
 		json.NewEncoder(w).Encode(s)
 	}
+}
+
+func count(s stats.Service) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		query, values := getParamsFromContext(r.Context())
+		s, err := s.GetCount(query, values)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		json.NewEncoder(w).Encode(s)
+	}
+
+}
+
+func getParamsFromContext(ctx context.Context) (string, []interface{}) {
+	c := ctx.Value(keyQueryParams)
+
+	// type assertion
+	query := c.(struct {
+		Query  string
+		Values []interface{}
+	}).Query
+
+	// type assertion
+	values := c.(struct {
+		Query  string
+		Values []interface{}
+	}).Values
+
+	return query, values
 }

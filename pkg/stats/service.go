@@ -1,16 +1,18 @@
 package stats
 
-import "net/url"
-
 // Repository provides access to storage.
 type Repository interface {
-	// GetColumnCount returns the counts for a given column and properties query.
-	GetColumnCount(column string, properties url.Values) ([]Stat, error)
+	// GetCount returns an int representing the result of `SELECT COUNT(*) WHERE`
+	GetCount(query string, values []interface{}) (int, error)
+	// GetColumnCount returns a slice of stats representing the result of
+	// SELECT column, COUNT(column) ... WHERE ... GROUP BY column
+	GetColumnCount(column, query string, values []interface{}) ([]Stat, error)
 }
 
-// Service provides stat options. Currently limited to fetching stats.
+// Service provides stat options.
 type Service interface {
-	GetStats(column string, properties url.Values) ([]Stat, error)
+	GetCount(query string, values []interface{}) (int, error)
+	GetColumnCount(column, query string, values []interface{}) ([]Stat, error)
 }
 
 type service struct {
@@ -22,6 +24,10 @@ func NewService(r Repository) Service {
 	return &service{r}
 }
 
-func (s *service) GetStats(column string, properties url.Values) ([]Stat, error) {
-	return s.r.GetColumnCount(column, properties)
+func (s *service) GetCount(query string, values []interface{}) (int, error) {
+	return s.r.GetCount(query, values)
+}
+
+func (s *service) GetColumnCount(column, query string, values []interface{}) ([]Stat, error) {
+	return s.r.GetColumnCount(column, query, values)
 }

@@ -1,8 +1,8 @@
 var slideBarSettings = {
     value: ["09-2015", "08-2018"],
-    width: "95%",
-    height: 15,
-    dotSize: 18,
+    width: "70%",
+    height: 5,
+    dotSize: 8,
     min: 1,
     max: 100,
     interval: 3,
@@ -11,6 +11,10 @@ var slideBarSettings = {
     tooltip: "always",
     startAnimation: false,
     processDragable: true,
+    enableCross: false,
+    style: {
+        "marginLeft": "20px"
+    },
     data: [
         "09-2015",
         "10-2015",
@@ -47,21 +51,29 @@ var slideBarSettings = {
         "05-2018",
         "06-2018",
         "07-2018",
-        "08-2018"
+        "08-2018",
+        "09-2018",
+        "10-2018",
+        "11-2018",
+        "12-2018"
     ],
     bgStyle: {
         backgroundColor: "#ddd",
         // boxShadow: "inset 0.5px 0.5px 3px 1px rgba(0,0,0,.36)"
     },
     piecewiseActiveStyle: {
-        backgroundColor: "#8c67ef"
+        // backgroundColor: "#8c67ef"
+        backgroundColor: "#FF0000"
     },
     labelActiveStyle: {
-        color: "#8c67ef"
+        // color: "#8c67ef"
+        color: "#FF0000"
     },
     tooltipStyle: {
         backgroundColor: "#8c67ef",
-        borderColor: "#8c67ef"
+        borderColor: "#8c67ef",
+        height: "20px",
+        fontSize: "65%"
     },
     processStyle: {
         backgroundColor: "#8c67ef"

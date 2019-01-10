@@ -41,11 +41,11 @@ func main() {
 	}
 	defer db.Close()
 	// reset db
-	log.Println("RESETTING DATABASE")
-	err = db.DestructiveReset("wm_test_ss")
-	if err != nil {
-		log.Fatalf("could not reset DB %v", err)
-	}
+	// log.Println("RESETTING DATABASE")
+	// err = db.DestructiveReset("wm_test_ss")
+	// if err != nil {
+	// 	log.Fatalf("could not reset DB %v", err)
+	// }
 
 	// defined clients
 	customClient := http.Client{Timeout: time.Second * 120}
@@ -129,11 +129,8 @@ func retryError(client *ukpolice.Client, date, force string, db Storage) {
 	}
 
 	for _, search := range searches {
-		// mutex.Lock()
 		search.Force = force
 		db.StoreSearch(search)
-		// mcol.Insert(search)
-		// mutex.Unlock()
 	}
 
 	fmt.Printf("RETRY OF %s-%s: SUCCESSFUL\n", date, force)
