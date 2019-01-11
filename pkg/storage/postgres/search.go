@@ -7,8 +7,8 @@ import (
 
 var (
 	ethnicityWhite     = "White"
-	ethnicityBlack     = "Black (or Black British)"
-	ethnicityAsian     = "Asian (or Asian British)"
+	ethnicityBlack     = "Black"
+	ethnicityAsian     = "Asian"
 	ethnicityOther     = "Chinese or other"
 	ethnicityMixed     = "Mixed"
 	ethnicityNotStated = "Not stated"
@@ -61,4 +61,19 @@ func normalizeAge(age string) string {
 	}
 
 	return "Not Stated"
+}
+
+func normalizeOutcomes(outcome string, search bool) string {
+	outcome = strings.Trim(outcome, "\"")
+
+	if search == false {
+		return "Nothing Found"
+	}
+
+	if search == true && outcome == "" {
+		return "Not Stated"
+	}
+
+	return outcome
+
 }

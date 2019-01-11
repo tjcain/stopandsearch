@@ -107,7 +107,7 @@ var defaultTestSchema = TestSchema{
 	);`,
 
 	drop: `
-	drop table searches`,
+	DROP TABLE IF EXISTS searches`,
 }
 
 func setupDB() (s *Storage, teardown func()) {

@@ -80,10 +80,10 @@ func (s *Storage) StoreSearch(search ukpolice.Search) error {
 	store.ObjectOfSearch = search.ObjectOfSearch
 	// store.Legislation = search.Legislation
 	store.Outcome.SearchHappened = search.Outcome.SearchHappened
-	store.Outcome.Desc = search.Outcome.Desc
+	store.Outcome.Desc = normalizeOutcomes(search.Outcome.Desc, search.Outcome.SearchHappened)
 
 	insert := fmt.Sprintf(`
-		INSERT INTO wm_test_ss
+		INSERT INTO searches
 		(force, time, age_range, ethnicity, search_happened, outcome,
 		gender, outcome_linked_to_object, object_of_search)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`)
