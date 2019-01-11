@@ -6,7 +6,7 @@
       </div>
 
       <!--  -->
-      <div class="column has-background-light">{{queryParams}}</div>
+      <div class="column has-background-light">{{query}}</div>
     </div>
   </div>
 </template>
@@ -25,19 +25,13 @@ export default {
     };
   },
   computed: {
-    queryParams() {
-      return this.query.join("&");
-    }
   },
   methods: {
-    setQuery(e) {
-      this.query = e;
-    },
     fetchData(e) {
+      console.log("CALL TRIGGERED!")
         this.query = e;
-        console.log(e)
-        axios.get("api/getcounts?" + this.queryParams)
-        .then(r => console.log(r))
+        // axios.get("api/getcounts?" + this.queryParams)
+        // .then(r => console.log(r))
     }
   }
 };

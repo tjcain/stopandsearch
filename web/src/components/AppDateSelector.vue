@@ -49,7 +49,6 @@ export default {
   /* height: 50px; */
   overflow-y: scroll;
 }
-
 .slider {
   width: 100%;
   padding-top: 20px;
