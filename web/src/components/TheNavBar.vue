@@ -1,6 +1,6 @@
 <template>
    <div>
-       <nav class="navbar" role="navigation" aria-label="main navigation">
+  <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <router-link class="navbar-item" to="/"> 
       <img src="../../public/logo.png" width="112" height="28">
@@ -17,14 +17,17 @@
     </a>
   </div>
 
+
   <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': showNav }">
     <div class="navbar-end">
+        <router-link class="navbar-item" to="/">Home</router-link>
         <router-link class="navbar-item" to="/about">About</router-link>
-        <router-link class="navbar-item" to="/">Contact</router-link>
+        <router-link class="navbar-item" to="/contact">Contact</router-link>
     </div>
   </div>
 </nav>
-   </div>
+
+</div>
 </template>
 
 <script>
@@ -37,5 +40,6 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+
 </style>

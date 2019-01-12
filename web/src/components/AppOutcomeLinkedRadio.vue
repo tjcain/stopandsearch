@@ -46,7 +46,6 @@ export default {
     },
     methods: {
         send() {
-            console.log("test")
             this.$emit('update-radio', this.queryParam)
         }
     },

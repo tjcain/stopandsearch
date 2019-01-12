@@ -6,11 +6,10 @@
       </div>
 
       <!--  -->
-      <div class="column is-10 has-background-light">
+      <div class="column is-10 is-12-touch has-background-light">
         <the-info-boxes :queryParams="query"/>
         <the-graphs :queryParams="query"/>
       </div>
-
     </div>
   </div>
 </template>
@@ -31,12 +30,10 @@ export default {
       query: []
     };
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     fetchData(e) {
-        this.query = e
+      this.query = e;
     }
   }
 };
