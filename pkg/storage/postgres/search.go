@@ -65,15 +65,50 @@ func normalizeAge(age string) string {
 
 func normalizeOutcomes(outcome string, search bool) string {
 	outcome = strings.Trim(outcome, "\"")
+	outcome = strings.ToLower(outcome)
 
 	if search == false {
 		return "Nothing Found"
 	}
+	// if search == true && outcome == "" {
+	// 	return "Not Stated"
+	// }
 
-	if search == true && outcome == "" {
-		return "Not Stated"
+	switch {
+	case strings.Contains(outcome, "arrest"):
+		return "Arrest"
+	case strings.Contains(outcome, "summon"):
+		return "Summons"
+	case strings.Contains(outcome, "penalty"):
+		return "Penalty Notice"
+	case strings.Contains(outcome, "caution"):
+		return "Caution"
+	case outcome == "khat / cannabis warning":
+		return "Khat/Cannabis Warning"
+	case outcome == "community resolution":
+		return "Community resolution"
+	default:
+		return "Other"
 	}
+}
 
-	return outcome
-
+func normalizeObjectOfSearch(object string) string {
+	switch {
+	case object == "Stolen goods":
+		return "Stolen property"
+	case object == "Firearms":
+		return "Firearms"
+	case object == "Controlled drugs":
+		return "Drugs"
+	case object == "Psychoactive substances":
+		return "Drugs"
+	case object == "Articles for use in criminal damage":
+		return "Criminal damage"
+	case object == "Article for use in theft":
+		return "Going equipped"
+	case object == "Offensive weapons":
+		return "Offensive weapons"
+	default:
+		return "Other"
+	}
 }

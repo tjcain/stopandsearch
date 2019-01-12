@@ -1,5 +1,5 @@
 var slideBarSettings = {
-    value: ["09-2015", "08-2018"],
+    value: ["09-2015", "01-2019"],
     width: "70%",
     height: 5,
     dotSize: 8,
@@ -55,7 +55,8 @@ var slideBarSettings = {
         "09-2018",
         "10-2018",
         "11-2018",
-        "12-2018"
+        "12-2018",
+        "01-2019"
     ],
     bgStyle: {
         backgroundColor: "#ddd",

@@ -16,7 +16,7 @@ export default {
     return {
       loaded: false,
       datacollection: null,
-       options: {
+      options: {
           maintainAspectRatio: false,
           legend: {
             display: false
@@ -26,14 +26,15 @@ export default {
             gridLines: {
                 display:false
             },
-                ticks: {
+            ticks: {
                 fontSize: 10
             }
         }],
         yAxes: [{
             gridLines: {
                 display:false
-            }   
+            },
+            
         }]
     }
        }
@@ -41,17 +42,19 @@ export default {
   },
   methods: {
     fillData() {
-      let chartInfo = {"under 10": 0, "10-17": 0, "18-24": 0, "25-34": 0, 
-      "over 34": 0, "Not Stated": 0}
-      axios.get("api/stats/columns/age_range?" + this.params).then(r => {
+      let chartInfo = {"Arrest":0,"Other":0,"Community resolution":0,"Nothing Found":0,
+      "Caution":0,"Penalty Notice":0,"Summons":0}
+
+      axios.get("api/stats/columns/outcome?" + this.params).then(r => {
         r.data.forEach(function(e){
           chartInfo[e.name] = e.count
         })
         this.datacollection = {
-          labels: Object.keys(chartInfo),
+          labels:[["Arrest"], ["Caution"], ["Comminty", "Resolution"], ["Nothing", "Found"], 
+          ["Other"],["Penalty", "Notice"], ["Summons"]],
           datasets: [
             {
-              label: "Age Range",
+              label: "Ethnicity",
               backgroundColor: "rgb(140, 103, 239)",
               data: Object.values(chartInfo)
             }

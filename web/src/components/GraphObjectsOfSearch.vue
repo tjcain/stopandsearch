@@ -16,7 +16,7 @@ export default {
     return {
       loaded: false,
       datacollection: null,
-       options: {
+      options: {
           maintainAspectRatio: false,
           legend: {
             display: false
@@ -26,14 +26,15 @@ export default {
             gridLines: {
                 display:false
             },
-                ticks: {
+            ticks: {
                 fontSize: 10
             }
         }],
         yAxes: [{
             gridLines: {
                 display:false
-            }   
+            },
+            
         }]
     }
        }
@@ -41,17 +42,19 @@ export default {
   },
   methods: {
     fillData() {
-      let chartInfo = {"under 10": 0, "10-17": 0, "18-24": 0, "25-34": 0, 
-      "over 34": 0, "Not Stated": 0}
-      axios.get("api/stats/columns/age_range?" + this.params).then(r => {
+      let chartInfo = {"Other":0,"Offensive weapons":0,"Drugs":0,"Going equipped":0,
+      "Firearms":0,"Criminal damage":0,"Stolen property":0}
+
+      axios.get("api/stats/columns/object_of_search?" + this.params).then(r => {
         r.data.forEach(function(e){
           chartInfo[e.name] = e.count
         })
         this.datacollection = {
-          labels: Object.keys(chartInfo),
+          labels:[["Criminal", "damage"], ["Drugs"], ["Going", "Equipped"], ["Firearms"], 
+      ["Offensive", "Weapons"], ["Other"], ["Stolen", "Property"]],
           datasets: [
             {
-              label: "Age Range",
+              label: "Ethnicity",
               backgroundColor: "rgb(140, 103, 239)",
               data: Object.values(chartInfo)
             }

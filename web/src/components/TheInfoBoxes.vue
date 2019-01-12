@@ -2,7 +2,7 @@
   <div class="tile is-ancestor">
     <div class="tile is-parent">
       <div class="tile is-child box">
-        <p class="title">{{count}}</p>
+        <p class="title">{{countFormated}}</p>
         <p class="sub-title">Searches</p>
       </div>
     </div>
@@ -40,6 +40,9 @@ export default {
     }
   }, 
   computed:{
+      countFormated() {
+        return String(this.count).replace(/(.)(?=(\d{3})+$)/g,'$1,')
+      },
       arrestsPercent() {
           return Math.round((this.arrestRate / this.count) * 100)
       },

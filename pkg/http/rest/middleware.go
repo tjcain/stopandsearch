@@ -54,7 +54,6 @@ func ParseQueryParams(next http.Handler) http.Handler {
 		if v, ok := r.Form["time"]; ok {
 			if len(v) == 2 {
 				for _, sv := range v {
-					sv = "01-" + sv
 					values = append(values, sv)
 				}
 				str := fmt.Sprintf("(time >= $%d AND time < $%d)", len(values)-1, len(values))

@@ -1,5 +1,6 @@
 // I hate this component..  Doing everything the long way is the only way I
 // could get anything to work.. I'm sorry.
+
 <template>
     <div>
         <p class="menu-label">Age Range</p>
@@ -108,6 +109,127 @@
             </div>            
         </section>
 
+        <p class="menu-label">Outcome</p>
+        <section class="checkboxes">
+            <div class="field">
+                <b-checkbox 
+                    @input="send"
+                    size="is-small"
+                    v-model="outcomeArray"
+                    native-value="outcome=Arrest">
+                        Arrest
+                </b-checkbox>
+            </div>
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="outcomeArray"
+                    native-value="outcome=Other">
+                        Other
+                </b-checkbox>
+            </div>
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="outcomeArray"
+                    native-value="outcome=Community+resolution">
+                        Community resolution
+                </b-checkbox>
+            </div>
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="outcomeArray"
+                    native-value="outcome=Nothing+Found">
+                        Nothing Found
+                </b-checkbox>
+            </div>
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="outcomeArray"
+                    native-value="outcome=Caution">
+                        Caution
+                </b-checkbox>
+            </div>
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="outcomeArray"
+                    native-value="outcome=Penalty+Notice">
+                        Penalty Notice
+                </b-checkbox>
+            </div>           
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="outcomeArray"
+                    native-value="outcome=Summons">
+                        Summons
+                </b-checkbox>
+            </div>             
+        </section>
+
+        <p class="menu-label">Object of Search</p>
+        <section class="checkboxes">
+            <div class="field">
+                <b-checkbox 
+                    @input="send"
+                    size="is-small"
+                    v-model="objectOfSearchArray"
+                    native-value="object_of_search=Criminal+damage">
+                        Criminal damage
+                </b-checkbox>
+            </div>   
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="objectOfSearchArray"
+                    native-value="object_of_search=Drugs">
+                        Drugs
+                </b-checkbox>
+            </div>
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="objectOfSearchArray"
+                    native-value="object_of_search=Firearms">
+                        Firearms
+                </b-checkbox>
+            </div>  
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="objectOfSearchArray"
+                    native-value="object_of_search=Going+equipped">
+                        Going equipped
+                </b-checkbox>
+            </div>      
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="objectOfSearchArray"
+                    native-value="object_of_search=Offensive+weapons">
+                        Offensive weapons
+                </b-checkbox>
+            </div>
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="objectOfSearchArray"
+                    native-value="object_of_search=Other">
+                        Other
+                </b-checkbox>
+            </div>
+            <div class="field">
+                <b-checkbox 
+                    size="is-small"
+                    v-model="objectOfSearchArray"
+                    native-value="object_of_search=Stolen+property">
+                        Stolen property
+                </b-checkbox>
+            </div>             
+        </section>
     </div>
 </template>
 
@@ -117,12 +239,14 @@ export default {
         return {
             ageArray: ["age_range=under+10","age_range=10-17","age_range=18-24",
             "age_range=25-34","age_range=over+34","age_range=Not+Stated"],
-            ethnicityArray: ["ethnicity=Chinese+or+other","ethnicity=Black","ethnicity=Not+stated","ethnicity=Mixed","ethnicity=White","ethnicity=Asian"]
+            ethnicityArray: ["ethnicity=Chinese+or+other","ethnicity=Black","ethnicity=Not+stated","ethnicity=Mixed","ethnicity=White","ethnicity=Asian"],
+            objectOfSearchArray: ["object_of_search=Other","object_of_search=Offensive+weapons","object_of_search=Drugs","object_of_search=Going+equipped","object_of_search=Firearms","object_of_search=Criminal+damage","object_of_search=Stolen+property"],
+            outcomeArray: ["outcome=Arrest","outcome=Other","outcome=Community+resolution","outcome=Nothing+Found","outcome=Caution","outcome=Penalty+Notice","outcome=Summons"]
         }
     },
     computed: {
         merge: function() {
-            let arr = [...this.ageArray, ...this.ethnicityArray]
+            let arr = [...this.ageArray, ...this.ethnicityArray, ...this.outcomeArray, ...this.objectOfSearchArray]
             return arr.join("&")
         }
     },
@@ -145,7 +269,7 @@ export default {
     margin: 1px 0px;
     }
     .checkboxes {
-    max-height: 15vh;
+    max-height: 125px;
     overflow-y: scroll;
     }
     .menu-label {

@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" //postgres driver
@@ -50,7 +49,6 @@ func (s *Storage) GetColumnCount(column, query string, values []interface{}) ([]
 		 FROM searches
 		 WHERE %[2]s
 		 GROUP BY %[1]s;`, column, query)
-	log.Println(q)
 	err := s.db.Select(&st, q, values...)
 	if err != nil {
 		return nil, err
@@ -79,7 +77,7 @@ func (s *Storage) StoreSearch(search ukpolice.Search) error {
 	store.Ethnicity = normalizeEthnicity(search.SelfDefinedEthnicity)
 	store.Gender = search.Gender
 	store.OutcomeLinkedToObject = search.OutcomeLinkedToObject
-	store.ObjectOfSearch = search.ObjectOfSearch
+	store.ObjectOfSearch = normalizeObjectOfSearch(search.ObjectOfSearch)
 	// store.Legislation = search.Legislation
 	store.Outcome.SearchHappened = search.Outcome.SearchHappened
 	store.Outcome.Desc = normalizeOutcomes(search.Outcome.Desc, search.Outcome.SearchHappened)

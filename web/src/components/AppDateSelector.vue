@@ -23,20 +23,26 @@ export default {
   },
   methods: {
     generateDateParams: function() {
-      let time = []
-      time.push("time=" + this.sliderModel[0])
-      time.push("time=" + this.sliderModel[1])
-      return time.join("&")
+      return this.dateValue
+    },
+  },
+  computed: {
+    dateValue() {
+      let from = this.sliderModel[0].split("-")
+      from = from[0] + "-01-" + from[1]
+      let to = this.sliderModel[1].split("-")
+      to = to[0] + "-01-" + to[1]
+      return "time="+from+"&"+"time="+to
     }
   },
   data() {
     return {
       slideBarSettings: slideBarSettings,
-      sliderModel: ["09-2015", "12-2018"],
+      sliderModel: ["09-2015", "01-2019"],
     };
   },
   created: function () {
-      this.$emit('date-range', this.generateDateParams())
+      this.$emit('date-range', this.dateValue)
   }
 };
 </script>

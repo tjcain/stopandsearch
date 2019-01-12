@@ -19,7 +19,6 @@
 import TheSideBar from "@/components/TheSideBar";
 import TheGraphs from "@/components/TheGraphs";
 import TheInfoBoxes from "@/components/TheInfoBoxes";
-import axios from "axios"
 
 export default {
   components: {
@@ -38,8 +37,6 @@ export default {
   methods: {
     fetchData(e) {
         this.query = e
-        // axios.get("api/getcounts?" + this.queryParams)
-        // .then(r => console.log(r))
     }
   }
 };

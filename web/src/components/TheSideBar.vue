@@ -1,7 +1,9 @@
 <template>
   <div>
-    <app-force-selector />
+    <!-- ADD OBJECT LINKED TO SEARCH TOGGLE -->
+    <app-force-selector/>
     <app-date-selector @date-range="updateDateRange"/>
+    <app-outcome-linked-radio @update-radio="updateRadio"/>
     <app-check-box @update-checkbox="updateValues"/>
   </div>
 </template>
@@ -9,13 +11,15 @@
 <script>
 import AppDateSelector from "@/components/AppDateSelector";
 import AppForceSelector from "@/components/AppForceSelector";
+import AppOutcomeLinkedRadio from "@/components/AppOutcomeLinkedRadio";
 import AppCheckBox from "@/components/AppCheckBox";
 
 export default {
   components: {
     AppDateSelector,
     AppForceSelector,
-    AppCheckBox
+    AppCheckBox,
+    AppOutcomeLinkedRadio
   },
   methods: {
     updateValues(e) {
@@ -25,18 +29,28 @@ export default {
     updateDateRange(e) {
       this.daterange = e;
       this.$emit("update-query-string", this.requestParams);
+    },
+    updateRadio(e) {
+      this.outcomelinked = e;
+      this.$emit("update-query-string", this.requestParams);
     }
   },
   data() {
     return {
-      checkboxquery:"",
-      daterange: ""
-    }
+      checkboxquery: "",
+      daterange: "",
+      outcomelinked: ""
+    };
   },
   computed: {
-   requestParams: function() {
-     return this.checkboxquery + "&" + this.daterange 
-     }
+    requestParams: function() {
+      if (this.outcomelinked === "") {
+        return this.checkboxquery + "&" + this.daterange;
+      }
+      return (
+        this.checkboxquery + "&" + this.daterange + "&" + this.outcomelinked
+      );
+    }
   }
 };
 </script>

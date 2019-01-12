@@ -54,12 +54,11 @@ export default {
           datasets: [
             {
               label: "Ethnicity",
-              backgroundColor: "#f87979",
+              backgroundColor: "rgb(140, 103, 239)",
               data: Object.values(chartInfo)
             }
           ]
         };
-        console.log(this.datacollection.labels)
       });
     }
   },
