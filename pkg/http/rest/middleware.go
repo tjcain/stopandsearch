@@ -69,7 +69,6 @@ func ParseQueryParams(next http.Handler) http.Handler {
 			strings.Join(where, " AND "),
 			values,
 		}
-
 		ctx := context.WithValue(r.Context(), keyQueryParams, q)
 		next.ServeHTTP(w, r.WithContext(ctx))
 

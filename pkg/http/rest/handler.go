@@ -53,7 +53,7 @@ func Handler(s stats.Service) chi.Router {
 	// RESTy routes
 	r.Route("/api/stats", func(r chi.Router) {
 		r.Use(ParseQueryParams)
-		r.Get("/stats/{column}", columnStats(s))
+		r.Get("/columns/{column}", columnStats(s))
 		r.Get("/count", count(s))
 	})
 
@@ -64,7 +64,7 @@ func columnStats(s stats.Service) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		column := chi.URLParam(r, "column")
 		query, values := getParamsFromContext(r.Context())
-
+		log.Println("QUERY:", query)
 		s, err := s.GetColumnCount(column, query, values)
 		if err != nil {
 			log.Fatalln(err)
@@ -76,6 +76,7 @@ func columnStats(s stats.Service) func(w http.ResponseWriter, r *http.Request) {
 func count(s stats.Service) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query, values := getParamsFromContext(r.Context())
+		log.Println(query)
 		s, err := s.GetCount(query, values)
 		if err != nil {
 			log.Fatalln(err)

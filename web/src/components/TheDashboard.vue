@@ -6,18 +6,26 @@
       </div>
 
       <!--  -->
-      <div class="column has-background-light">{{query}}</div>
+      <div class="column is-10 has-background-light">
+        <the-info-boxes :queryParams="query"/>
+        <the-graphs :queryParams="query"/>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script>
 import TheSideBar from "@/components/TheSideBar";
-import axios from 'axios'
+import TheGraphs from "@/components/TheGraphs";
+import TheInfoBoxes from "@/components/TheInfoBoxes";
+import axios from "axios"
 
 export default {
   components: {
-    TheSideBar
+    TheSideBar,
+    TheGraphs,
+    TheInfoBoxes
   },
   data() {
     return {
@@ -25,11 +33,11 @@ export default {
     };
   },
   computed: {
+
   },
   methods: {
     fetchData(e) {
-      console.log("CALL TRIGGERED!")
-        this.query = e;
+        this.query = e
         // axios.get("api/getcounts?" + this.queryParams)
         // .then(r => console.log(r))
     }

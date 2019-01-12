@@ -34,6 +34,9 @@ export default {
       slideBarSettings: slideBarSettings,
       sliderModel: ["09-2015", "12-2018"],
     };
+  },
+  created: function () {
+      this.$emit('date-range', this.generateDateParams())
   }
 };
 </script>
@@ -54,3 +57,4 @@ export default {
   padding-top: 20px;
 }
 </style>
+
