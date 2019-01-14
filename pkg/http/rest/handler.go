@@ -39,7 +39,7 @@ func Handler(s stats.Service) chi.Router {
 	}
 
 	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
+	// r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
 	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
@@ -78,9 +78,13 @@ func columnStats(s stats.Service) func(w http.ResponseWriter, r *http.Request) {
 		query, values := getParamsFromContext(r.Context())
 		s, err := s.GetColumnCount(column, query, values)
 		if err != nil {
-			// @TODO: error handler
+			render.Render(w, r, ErrNotFound)
+			return
 		}
-		json.NewEncoder(w).Encode(s)
+		err = render.RenderList(w, r, NewStatsListResponse(s))
+		if err != nil {
+			render.Render(w, r, ErrRender(err))
+		}
 	}
 }
 
