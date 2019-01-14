@@ -21,3 +21,6 @@
 
 # vscode
 /.vscode
+
+#mac
+.DS_store

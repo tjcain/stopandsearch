@@ -2,7 +2,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -14,7 +13,10 @@ import (
 
 func main() {
 	// set up storage
-	db := postgres.NewPostgresDB()
+	db, err := postgres.NewPostgresDB()
+	if err != nil {
+		log.Fatalln("could not open database connection:", err)
+	}
 	defer db.Close()
 
 	// set up services.
@@ -24,14 +26,8 @@ func main() {
 
 	// create tables
 	fetch.CreateTables()
-
-	fmt.Println("starting....")
-	start := time.Now()
 	if err := fetch.UpdateData(); err != nil {
 		log.Fatalf("UpdateData Failed: %s", err)
 	}
-
-	done := time.Since(start)
-	fmt.Printf("Done after %s seconds", done)
 
 }

@@ -92,7 +92,7 @@ type TestSchema struct {
 
 var defaultTestSchema = TestSchema{
 	create: `
-	CREATE TABLE searches
+	CREATE TABLE searches_test
 	(
 		force text,
 		time timestamp(6)
@@ -107,7 +107,7 @@ var defaultTestSchema = TestSchema{
 	);`,
 
 	drop: `
-	DROP TABLE IF EXISTS searches`,
+	DROP TABLE IF EXISTS searches_test`,
 }
 
 func setupDB() (s *Storage, teardown func()) {

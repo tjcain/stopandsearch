@@ -15,10 +15,12 @@ type Storage struct {
 }
 
 // NewPostgresDB returns a postgres database given a provided connection string.
-func NewPostgresDB() *Storage {
-	db := sqlx.MustConnect("postgres", setDBConnectionInfo())
-
-	return &Storage{db}
+func NewPostgresDB() (*Storage, error) {
+	db, err := sqlx.Connect("postgres", setDBConnectionInfo())
+	if err != nil {
+		return nil, err
+	}
+	return &Storage{db}, nil
 }
 
 // Close closes the db connection pool

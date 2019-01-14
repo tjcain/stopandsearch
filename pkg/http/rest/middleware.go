@@ -3,7 +3,6 @@ package rest
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -31,7 +30,6 @@ func ParseQueryParams(next http.Handler) http.Handler {
 		err := r.ParseForm()
 		if err != nil {
 			// @TODO: Return http error of some sort
-			log.Fatalf("problem parsing form: %s", err)
 		}
 
 		for _, key := range columns {

@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -9,7 +10,7 @@ import (
 // variables, or if they are unset returns default settings.
 func setDBConnectionInfo() string {
 	host := os.Getenv("PG_HOST")
-	port := os.Getenv("PG_PORT")
+	// port := os.Getenv("PG_PORT")
 	user := os.Getenv("PG_USER")
 	password := os.Getenv("PG_PASSWORD")
 	dbname := os.Getenv("PG_DBNAME")
@@ -17,9 +18,10 @@ func setDBConnectionInfo() string {
 	psqlInfo := ""
 
 	if host != "" {
-		psqlInfo = fmt.Sprintf("host=%s port=%s user=%s "+
+		psqlInfo = fmt.Sprintf("host=%s user=%s "+
 			"password=%s dbname=%s sslmode=disable",
-			host, port, user, password, dbname)
+			host, user, password, dbname)
+		log.Println("CONNECTION INFO", psqlInfo)
 	} else {
 		psqlInfo = fmt.Sprintf("host=%s port=%s user=%s "+
 			"password=%s dbname=%s sslmode=disable",

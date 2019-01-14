@@ -3,12 +3,9 @@ package fetch
 import (
 	"context"
 	"log"
-	"sync"
 
 	"github.com/tjcain/ukpolice"
 )
-
-var wg sync.WaitGroup
 
 // Repository provides access to storage.
 type Repository interface {
@@ -20,7 +17,6 @@ type Repository interface {
 
 // Service provides fetch options.
 type Service interface {
-	// UpdateRequired() (bool, error)
 	UpdateData() error
 	CreateTables()
 }
@@ -57,7 +53,6 @@ func (s *service) UpdateData() error {
 	}
 
 	buildRequests(requests, avaliable)
-	wg.Wait()
 	return nil
 }
 
@@ -83,7 +78,6 @@ func buildRequests(r chan<- requestInfo, avaliable []ukpolice.AvailabilityInfo) 
 }
 
 func reqWorker(r chan requestInfo, s chan<- ukpolice.Search, c *ukpolice.Client, nMax int) {
-	wg.Add(1)
 	for req := range r {
 		searches, _, err := c.StopAndSearch.GetStopAndSearchesByForce(context.Background(),
 			ukpolice.WithDate(req.date), ukpolice.WithForce(req.force))
@@ -100,15 +94,12 @@ func reqWorker(r chan requestInfo, s chan<- ukpolice.Search, c *ukpolice.Client,
 			s <- search
 		}
 	}
-	wg.Done()
 }
 
 func storeWorker(s <-chan ukpolice.Search, r Repository) {
 	for search := range s {
-		wg.Add(1)
 		if err := r.StoreSearch(search); err != nil {
-			log.Println(err)
+			log.Println(err) // @TODO: logging solution.
 		}
-		wg.Done()
 	}
 }
