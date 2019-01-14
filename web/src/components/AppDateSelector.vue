@@ -55,7 +55,6 @@ export default {
   margin-bottom: 1px;
 }
 .checkboxes {
-  /* height: 50px; */
   overflow-y: scroll;
 }
 .slider {

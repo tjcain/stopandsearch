@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- ADD OBJECT LINKED TO SEARCH TOGGLE -->
     <app-force-selector/>
     <app-date-selector @date-range="updateDateRange"/>
     <app-outcome-linked-radio @update-radio="updateRadio"/>

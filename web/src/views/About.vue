@@ -13,7 +13,7 @@
           <p>
             You can't. That is why all the source code for this project is open sourced
             at
-            <a href="https://github.com/tjcain/stopandsearch/issues">github</a>.
+            <a href="https://github.com/tjcain/stopandsearch">github</a>.
           </p>
           <h3>Where does the information come from?</h3>
           <p>

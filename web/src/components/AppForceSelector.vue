@@ -8,12 +8,6 @@
             <span>West Midlands</span>
             <b-icon icon="menu-down"></b-icon>
           </button>
-          <!-- <option
-        v-for="force in forces"
-        :key="force.id"
-        :value="force.name"
-        class="is-success"
-          >{{force.name}}</option>-->
           <option>West Midlands</option>
         </b-select>
       </div>
