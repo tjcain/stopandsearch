@@ -38,9 +38,9 @@ func main() {
 	// create tables
 	fetch.CreateTables()
 
-	if err := fetch.UpdateData(); err != nil {
-		log.Fatalf("UpdateData Failed: %s", err)
-	}
+	// if err := fetch.UpdateData(); err != nil {
+	// 	log.Fatalf("UpdateData Failed: %s", err)
+	// }
 
 	// set up services.
 	stats := stats.NewService(db)

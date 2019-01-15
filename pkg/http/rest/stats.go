@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/go-chi/render"
@@ -33,12 +32,9 @@ type StatsListResponse []*StatsResponse
 
 // NewStatsListResponse creates a response built from a slice of stats
 func NewStatsListResponse(stats []stats.Stat) []render.Renderer {
-	log.Println(stats)
 	list := []render.Renderer{}
 	for _, stat := range stats {
-		log.Println(stat)
 		list = append(list, NewStatsResponse(stat))
-		log.Println(list)
 	}
 	return list
 }

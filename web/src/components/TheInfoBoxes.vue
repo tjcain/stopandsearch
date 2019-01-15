@@ -55,12 +55,14 @@ export default {
   },
   methods: {
       fetchCount() {
-        axios.get("api/stats/count?" + this.queryParams).then(r => {
+        axios.get("api/stats/count?" + this.queryParams)
+        .catch(() => {window.location.href = "uhoh/error";}).then(r => {
         this.count = r.data;
       });
       },
       fetchArrestRate(){
-          axios.get("api/stats/columns/outcome?" + this.queryParams).then(r => {
+          axios.get("api/stats/columns/outcome?" + this.queryParams)
+          .catch((error) => {console.log(error)}).then(r => {
               
               let i = 0
               r.data.forEach(function(n){
@@ -69,10 +71,11 @@ export default {
               }
           })
         this.arrestRate = i
-          })
+          });
       },
       fetchOutcomes() {
-          axios.get("api/stats/columns/search_happened?" + this.queryParams).then(r => {
+          axios.get("api/stats/columns/search_happened?" + this.queryParams)
+          .catch((error) => {console.log(error)}).then(r => {
               let t = 0
               let f = 0
               r.data.forEach(function(n){
@@ -85,7 +88,7 @@ export default {
           })
             this.positiveOutcome = t
             this.negativeOutcome = f
-          })
+          });
       }
   },
   watch: {
