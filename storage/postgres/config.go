@@ -18,14 +18,14 @@ func setDBConnectionInfo() string {
 	psqlInfo := ""
 
 	if host != "" {
-		psqlInfo = fmt.Sprintf("host=%s user=%s "+
+		psqlInfo = fmt.Sprintf("host=%s user=%s "
 			"password=%s dbname=%s sslmode=disable",
 			host, user, password, dbname)
 		log.Println("CONNECTION INFO", psqlInfo)
 	} else {
 		psqlInfo = fmt.Sprintf("host=%s port=%s user=%s "+
-			"password=%s dbname=%s sslmode=disable",
-			"localhost", "5432", "postgres", "", "postgres")
+			"dbname=%s sslmode=disable",
+			"localhost", "5432", "postgres", "postgres")
 	}
 
 	return psqlInfo
