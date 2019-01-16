@@ -1,36 +1,5 @@
 package postgres
 
-import (
-	"fmt"
-	"log"
-	"os"
-)
-
-// setDBConnectionInfo returns a connection string for postgres based on env
-// variables, or if they are unset returns default settings.
-func setDBConnectionInfo() string {
-	host := os.Getenv("PG_HOST")
-	// port := os.Getenv("PG_PORT")
-	user := os.Getenv("PG_USER")
-	password := os.Getenv("PG_PASSWORD")
-	dbname := os.Getenv("PG_DBNAME")
-
-	psqlInfo := ""
-
-	if host != "" {
-		psqlInfo = fmt.Sprintf("host=%s user=%s "+
-			"password=%s dbname=%s sslmode=disable",
-			host, user, password, dbname)
-		log.Println("CONNECTION INFO", psqlInfo)
-	} else {
-		psqlInfo = fmt.Sprintf("host=%s port=%s user=%s "+
-			"dbname=%s sslmode=disable",
-			"localhost", "5432", "postgres", "postgres")
-	}
-
-	return psqlInfo
-}
-
 // CreateTables will drop any existing tables and create new. Panics on fail.
 func (s *Storage) CreateTables() {
 	s.db.MustExec("DROP TABLE IF EXISTS searches")

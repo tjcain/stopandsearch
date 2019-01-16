@@ -43,6 +43,7 @@ func (s *service) UpdateData() error {
 
 	maxWorkers := 5
 	maxRetries := 2
+
 	requests := make(chan requestInfo, 100)
 	store := make(chan ukpolice.Search)
 

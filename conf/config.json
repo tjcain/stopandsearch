@@ -1,0 +1,9 @@
+{
+    "db": {
+        "name": "postgres",
+        "username": "postgres",
+        "password": "postgres"
+    }, 
+
+    "env": "development"
+}

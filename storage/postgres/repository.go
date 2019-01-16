@@ -5,6 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" //postgres driver
+	"github.com/pkg/errors"
 	"github.com/tjcain/stopandsearch/stats"
 	"github.com/tjcain/ukpolice"
 )
@@ -14,12 +15,20 @@ type Storage struct {
 	db *sqlx.DB
 }
 
-// NewPostgresDB returns a postgres database given a provided connection string.
-func NewPostgresDB() (*Storage, error) {
-	db, err := sqlx.Connect("postgres", setDBConnectionInfo())
+// New returns a PostgreSQL back Storage.
+func New(username, password, dbname, host string) (*Storage, error) {
+	dsn := fmt.Sprintf("sslmode=disable dbname=%s user=%s password=%s host=%s",
+		dbname, username, password, host)
+
+	db, err := sqlx.Open("postgres", dsn)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "count not open connection to postgres")
 	}
+
+	if err := db.Ping(); err != nil {
+		return nil, errors.Wrap(err, "count not ping postgres")
+	}
+
 	return &Storage{db}, nil
 }
 

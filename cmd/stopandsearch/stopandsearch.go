@@ -1,46 +1,45 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/tjcain/ukpolice"
 
+	"github.com/tjcain/stopandsearch/config"
 	"github.com/tjcain/stopandsearch/fetch"
 	"github.com/tjcain/stopandsearch/http/rest"
 	"github.com/tjcain/stopandsearch/stats"
 	"github.com/tjcain/stopandsearch/storage/postgres"
 )
 
+var configPath = flag.String("config-file", "conf/config.json", "Path to configuration file.")
+
 func main() {
-	// wait for containers to spool up properly
-	for i := 0; i < 5; i++ {
-		// set up storage
-		_, err := postgres.NewPostgresDB()
-		if err == nil {
-			break
-		}
-		time.Sleep(5 * time.Second)
+	flag.Parse()
+	c, err := config.ParseFile(*configPath)
+	if err != nil {
+		log.Fatalln("Error reading config:", err)
 	}
 
-	db, err := postgres.NewPostgresDB()
+	db, err := postgres.New(c.DB.Username, c.DB.Password, c.DB.Name, c.DB.Host)
 	if err != nil {
 		log.Fatalln("Db setup failed:", err)
 	}
 	defer db.Close()
 
 	// set up services.
-	customClient := http.Client{Timeout: time.Second * 120}
-	client := ukpolice.NewClient(&customClient)
+	client := ukpolice.NewClient(&http.Client{Timeout: time.Second * 120})
 	fetch := fetch.NewService(db, client)
 
 	// create tables
 	fetch.CreateTables()
 
-	// if err := fetch.UpdateData(); err != nil {
-	// 	log.Fatalf("UpdateData Failed: %s", err)
-	// }
+	if err := fetch.UpdateData(); err != nil {
+		log.Fatalf("UpdateData Failed: %s", err)
+	}
 
 	// set up services.
 	stats := stats.NewService(db)
@@ -50,5 +49,4 @@ func main() {
 	if err := http.ListenAndServe(":4000", r); err != nil {
 		log.Fatalln(err)
 	}
-
 }

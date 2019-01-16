@@ -4,18 +4,11 @@ services:
     image: postgres
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=docker
-
+      - POSTGRES_PASSWORD=postgres
 
   app:
     build: .
-    command: ["/app/stopandsearch"]
-    environment:
-      STOP_SEARCH_ENV: prod
-      PG_HOST: db
-      PG_USER: postgres
-      PG_DBNAME: postgres
-      PG_PASSWORD: docker
+    command: /app/stopandsearch -config-file=/app/conf/config.json
     volumes:
       - .:/go/src/app
     ports:

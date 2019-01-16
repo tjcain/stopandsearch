@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// set up storage
-	db, err := postgres.NewPostgresDB()
+	db, err := postgres.New("postgres", "postgres", "postgres")
 	if err != nil {
 		log.Fatalln("could not open database connection:", err)
 	}
@@ -29,5 +29,4 @@ func main() {
 	if err := fetch.UpdateData(); err != nil {
 		log.Fatalf("UpdateData Failed: %s", err)
 	}
-
 }

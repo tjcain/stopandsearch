@@ -32,5 +32,6 @@ RUN apk add -U --no-cache ca-certificates
 # final stage
 FROM scratch
 COPY --from=gobuilder /app/stopandsearch /app/
+COPY --from=gobuilder /app/conf/config.json /app/conf/
 COPY --from=vuebuilder /app/web/dist/ /app/
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

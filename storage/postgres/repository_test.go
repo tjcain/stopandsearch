@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"os"
+	"log"
 	"reflect"
 	"testing"
 
@@ -43,45 +43,6 @@ func Test_GetColumnCount(t *testing.T) {
 	}
 }
 
-func Test_setDBConnectionInfo_WithEnvVariables(t *testing.T) {
-	setenv()
-	defer unsetenv()
-
-	want := "host=localhost port=5432 user=userName password=1234 dbname=postgres sslmode=disable"
-	got := setDBConnectionInfo()
-
-	if want != got {
-		t.Errorf("DB Connection info with env variables wanted %s got %s", want, got)
-	}
-
-}
-
-func Test_setDBConnectionInfo_default(t *testing.T) {
-	want := connStr
-	got := setDBConnectionInfo()
-
-	if want != got {
-		t.Errorf("DB Connection info with env variables wanted %s got %s", want, got)
-	}
-}
-
-// Env setups
-func setenv() {
-	os.Setenv("PG_HOST", "localhost")
-	os.Setenv("PG_PORT", "5432")
-	os.Setenv("PG_USER", "userName")
-	os.Setenv("PG_PASSWORD", "1234")
-	os.Setenv("PG_DBNAME", "postgres")
-}
-
-func unsetenv() {
-	os.Unsetenv("PG_HOST")
-	os.Unsetenv("PG_PORT")
-	os.Unsetenv("PG_USER")
-	os.Unsetenv("PG_PASSWORD")
-	os.Unsetenv("PG_DBNAME")
-}
-
 // DB setups
 
 // Schema holds the SQL required to create and drop database tables
@@ -111,7 +72,10 @@ var defaultTestSchema = TestSchema{
 }
 
 func setupDB() (s *Storage, teardown func()) {
-	s = NewPostgresDB()
+	s, err := New("postgres", "postgres", "postgres") // @TODO: Remove hard coding
+	if err != nil {
+		log.Fatalln("Cannot establish db connection", err)
+	}
 	s.db.MustExec(defaultTestSchema.create)
 	loadDefaultFixture(s.db)
 
