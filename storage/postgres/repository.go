@@ -5,7 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" //postgres driver
-	"github.com/tjcain/stopandsearch/pkg/stats"
+	"github.com/tjcain/stopandsearch/stats"
 	"github.com/tjcain/ukpolice"
 )
 

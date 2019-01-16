@@ -7,10 +7,10 @@ import (
 
 	"github.com/tjcain/ukpolice"
 
-	"github.com/tjcain/stopandsearch/pkg/fetch"
-	"github.com/tjcain/stopandsearch/pkg/http/rest"
-	"github.com/tjcain/stopandsearch/pkg/stats"
-	"github.com/tjcain/stopandsearch/pkg/storage/postgres"
+	"github.com/tjcain/stopandsearch/fetch"
+	"github.com/tjcain/stopandsearch/http/rest"
+	"github.com/tjcain/stopandsearch/stats"
+	"github.com/tjcain/stopandsearch/storage/postgres"
 )
 
 func main() {

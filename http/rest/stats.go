@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
-	"github.com/tjcain/stopandsearch/pkg/stats"
+	"github.com/tjcain/stopandsearch/stats"
 )
 
 // StatsResponse is the response payload for the Stats data model.

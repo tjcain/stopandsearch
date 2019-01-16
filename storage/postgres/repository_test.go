@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/tjcain/stopandsearch/pkg/stats"
+	"github.com/tjcain/stopandsearch/stats"
 )
 
 const (

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/tjcain/stopandsearch/pkg/fetch"
-	"github.com/tjcain/stopandsearch/pkg/storage/postgres"
+	"github.com/tjcain/stopandsearch/fetch"
+	"github.com/tjcain/stopandsearch/storage/postgres"
 	"github.com/tjcain/ukpolice"
 )
 

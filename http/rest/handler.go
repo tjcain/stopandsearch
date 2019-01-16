@@ -9,7 +9,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/tjcain/stopandsearch/pkg/stats"
+	"github.com/tjcain/stopandsearch/stats"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
