@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns">
-      <div class="column is-2 has-background-white">
+      <div class="column is-2 has-background-light">
         <the-side-bar @update-query-string="fetchData"/>
       </div>
 

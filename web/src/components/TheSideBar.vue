@@ -1,14 +1,18 @@
 <template>
   <div>
     <app-force-selector/>
-    <app-date-selector @date-range="updateDateRange"/>
-    <app-outcome-linked-radio @update-radio="updateRadio"/>
-    <app-check-box @update-checkbox="updateValues"/>
+    <app-date-selector @date-range="updateDateRange"/> 
+    <app-drop-down-filter />
+
+
+    <!-- <app-outcome-linked-radio @update-radio="updateRadio"/>
+    <app-check-box @update-checkbox="updateValues"/> -->
   </div>
 </template>
 
 <script>
 import AppDateSelector from "@/components/AppDateSelector";
+import AppDropDownFilter from "@/components/AppDropDownFilter";
 import AppForceSelector from "@/components/AppForceSelector";
 import AppOutcomeLinkedRadio from "@/components/AppOutcomeLinkedRadio";
 import AppCheckBox from "@/components/AppCheckBox";
@@ -16,6 +20,7 @@ import AppCheckBox from "@/components/AppCheckBox";
 export default {
   components: {
     AppDateSelector,
+    AppDropDownFilter,
     AppForceSelector,
     AppCheckBox,
     AppOutcomeLinkedRadio
@@ -54,5 +59,6 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+
 </style>
