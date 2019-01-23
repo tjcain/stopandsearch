@@ -3,6 +3,7 @@ package rest
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -22,7 +23,7 @@ func ParseQueryParams(next http.Handler) http.Handler {
 		// @TODO: Remove hardcoding of columns
 		columns := []string{"age_range", "force", "month_year", "ethnicity",
 			"search_happened", "outcome", "gender", "outcome_linked_to_object",
-			"object_of_search"}
+			"object_of_search", "legislation"}
 
 		var values []interface{}
 		var where []string
@@ -30,6 +31,7 @@ func ParseQueryParams(next http.Handler) http.Handler {
 		err := r.ParseForm()
 		if err != nil {
 			// @TODO: Return http error of some sort
+			log.Println("error logging form", err)
 		}
 
 		for _, key := range columns {

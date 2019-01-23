@@ -1,8 +1,8 @@
 var slideBarSettings = {
     value: ["09-2015", "01-2019"],
-    width: "70%",
-    height: 5,
-    dotSize: 8,
+    width: "80%",
+    height: 10,
+    dotSize: 16,
     min: 1,
     max: 100,
     interval: 3,
@@ -13,7 +13,8 @@ var slideBarSettings = {
     processDragable: true,
     enableCross: false,
     style: {
-        "marginLeft": "20px"
+        "marginLeft": "auto",
+        "marginRight": "auto"
     },
     data: [
         "09-2015",

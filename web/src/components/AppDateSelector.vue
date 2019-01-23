@@ -1,13 +1,32 @@
 <template>
-  <div>
-    <p class="menu-label">Date Range</p>
-    <div class="slider">
+  <div class="box noselect">
+    <nav class="level is-mobile">
+      <div class="level-left" @click="showDateRange = !showDateRange">
+        <div class="level-item">
+            <span class="icon is-small has-text-primary"
+            v-bind:class="[showDateRange ? 'rotated' : '']">
+              <i class="fas fa-chevron-down"></i>
+            </span>
+        </div>
+        <div class="level-item">
+          <p class="menu-label">Date Range</p>
+        </div>
+      </div>
+
+      <div class="level-right" @click="active = !active">
+        <div class="level-item">
+          <b-switch size="is-small" v-model="active" :value="true" type="is-success"></b-switch>
+        </div>
+      </div>
+    </nav>
+
+    <div v-if="showDateRange" class="slider">
       <div class="field">
         <vue-slider
           ref="slider4"
           v-bind="slideBarSettings"
           v-model="sliderModel"
-          v-on:drag-end="$emit('date-range', generateDateParams())"
+          :disabled="!active"
         ></vue-slider>
       </div>
     </div>
@@ -18,48 +37,87 @@
 import slideBarSettings from "@/slideBarSettings.js";
 import vueSlider from "vue-slider-component";
 export default {
-    components: {
+  components: {
     vueSlider
   },
   methods: {
     generateDateParams: function() {
-      return this.dateValue
-    },
+      return this.dateValue;
+    }
   },
   computed: {
     dateValue() {
-      let from = this.sliderModel[0].split("-")
-      from = from[0] + "-01-" + from[1]
-      let to = this.sliderModel[1].split("-")
-      to = to[0] + "-01-" + to[1]
-      return "time="+from+"&"+"time="+to
+      let from = this.sliderModel[0].split("-");
+      from = from[0] + "-01-" + from[1];
+      let to = this.sliderModel[1].split("-");
+      to = to[0] + "-01-" + to[1];
+      return "time=" + from + "&" + "time=" + to;
     }
   },
   data() {
     return {
       slideBarSettings: slideBarSettings,
       sliderModel: ["09-2015", "01-2019"],
+      active: false,
+      showDateRange: false
     };
   },
-  created: function () {
-      this.$emit('date-range', this.dateValue)
+  watch: {
+    sliderModel() {
+      if (this.active) {
+        const payload = {
+          key: "time",
+          parameters: this.dateValue
+        };
+        this.$store.dispatch("updateURLQueryParameters", payload);
+      }
+    },
+    active() {
+      if (this.active === false) {
+        const payload = { key: "time", parameters: [] };
+        this.$store.dispatch("updateURLQueryParameters", payload);
+      } else {
+        const payload = {
+          key: "time",
+          parameters: this.dateValue
+        };
+        this.$store.dispatch("updateURLQueryParameters", payload);
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
-.field:not(:last-child) {
-  margin-bottom: 1px;
+@media only screen and (min-device-width: 1024px) {
+  .menu-label {
+    max-width: 10vw;
+  }
 }
-.field {
-  margin-bottom: 1px;
+
+.level-left, .level-right {
+  cursor: pointer;
 }
-.checkboxes {
-  overflow-y: scroll;
+
+.box {
+  padding: 10px;
 }
 .slider {
-  width: 100%;
   padding-top: 20px;
+}
+
+.rotated {
+  transform: rotate(180deg); /* Equal to rotateZ(45deg) */
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }
 </style>
 

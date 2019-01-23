@@ -39,12 +39,14 @@ func Handler(s stats.Service) chi.Router {
 	}
 
 	r.Use(middleware.RequestID)
-	// r.Use(middleware.Logger)
+	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
 	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("pong"))
 	})
+
+	r.Get("/api/categories", getCategories(s))
 
 	// Serve the vueSPA in history mode
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
@@ -98,6 +100,17 @@ func count(s stats.Service) func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(s)
 	}
 
+}
+
+func getCategories(s stats.Service) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		c, err := s.GetCategories()
+		if err != nil {
+			w.Write([]byte(err.Error()))
+			return
+		}
+		json.NewEncoder(w).Encode(c)
+	}
 }
 
 func getParamsFromContext(ctx context.Context) (string, []interface{}) {

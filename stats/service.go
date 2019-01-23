@@ -7,12 +7,15 @@ type Repository interface {
 	// GetColumnCount returns a slice of stats representing the result of
 	// SELECT column, COUNT(column) ... WHERE ... GROUP BY column
 	GetColumnCount(column, query string, values []interface{}) ([]Stat, error)
+	// GetCategories returns the unique rows for each column of the database.
+	GetCategories() (*Categories, error)
 }
 
 // Service provides stat options.
 type Service interface {
 	GetCount(query string, values []interface{}) (int, error)
 	GetColumnCount(column, query string, values []interface{}) ([]Stat, error)
+	GetCategories() (*Categories, error)
 }
 
 type service struct {
@@ -30,4 +33,8 @@ func (s *service) GetCount(query string, values []interface{}) (int, error) {
 
 func (s *service) GetColumnCount(column, query string, values []interface{}) ([]Stat, error) {
 	return s.r.GetColumnCount(column, query, values)
+}
+
+func (s *service) GetCategories() (*Categories, error) {
+	return s.r.GetCategories()
 }

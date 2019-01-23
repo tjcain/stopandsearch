@@ -39,14 +39,82 @@ func (s *Storage) Close() {
 
 // RETRIEVAL METHODS
 
+// GetCategories fetches DISTINCT rows for each category
+func (s *Storage) GetCategories() (*stats.Categories, error) {
+	c := Categories{}
+
+	q := fmt.Sprintf("SELECT DISTINCT age_range FROM searches;")
+	err := s.db.Select(&c.AgeRange, q)
+	if err != nil {
+		errors.Wrap(err, "could not get category: age_range")
+		return nil, err
+	}
+
+	q = fmt.Sprintf("SELECT DISTINCT ethnicity FROM searches;")
+	err = s.db.Select(&c.Ethnicity, q)
+	if err != nil {
+		errors.Wrap(err, "could not get category: ethnicity")
+		return nil, err
+	}
+
+	q = fmt.Sprintf("SELECT DISTINCT outcome FROM searches;")
+	err = s.db.Select(&c.Outcome, q)
+	if err != nil {
+		errors.Wrap(err, "could not get category: outcome")
+		return nil, err
+	}
+
+	q = fmt.Sprintf("SELECT DISTINCT outcome_linked_to_object FROM searches;")
+	err = s.db.Select(&c.OutcomeLinked, q)
+	if err != nil {
+		errors.Wrap(err, "could not get category: outcome_linked_to_object")
+		return nil, err
+	}
+
+	q = fmt.Sprintf("SELECT DISTINCT object_of_search FROM searches;")
+	err = s.db.Select(&c.ObjectOfSearch, q)
+	if err != nil {
+		errors.Wrap(err, "could not get category: object_of_search")
+		return nil, err
+	}
+
+	q = fmt.Sprintf("SELECT DISTINCT legislation FROM searches;")
+	err = s.db.Select(&c.Legislation, q)
+	if err != nil {
+		errors.Wrap(err, "could not get category: legislation")
+		return nil, err
+	}
+
+	stats := &stats.Categories{
+		AgeRange:       c.AgeRange,
+		Ethnicity:      c.Ethnicity,
+		Outcome:        c.Outcome,
+		OutcomeLinked:  c.OutcomeLinked,
+		ObjectOfSearch: c.ObjectOfSearch,
+		Legislation:    c.Legislation,
+	}
+	return stats, nil
+}
+
 // GetCount returns an int representing the result of `SELECT COUNT(*) WHERE`
 func (s *Storage) GetCount(query string, values []interface{}) (int, error) {
 	var count int
-	q := fmt.Sprintf("SELECT count(*) FROM searches WHERE %s;", query)
-	err := s.db.Get(&count, q, values...)
-	if err != nil {
-		return 0, err
+	if len(query) == 0 {
+		q := fmt.Sprintf("SELECT count(*) FROM searches")
+		err := s.db.Get(&count, q)
+		if err != nil {
+			return 0, err
+		}
 	}
+
+	if len(query) > 0 {
+		q := fmt.Sprintf("SELECT count(*) FROM searches WHERE %s;", query)
+		err := s.db.Get(&count, q, values...)
+		if err != nil {
+			return 0, err
+		}
+	}
+
 	return count, nil
 }
 
@@ -54,16 +122,31 @@ func (s *Storage) GetCount(query string, values []interface{}) (int, error) {
 // SELECT column, COUNT(column) ... WHERE ... GROUP BY column
 func (s *Storage) GetColumnCount(column, query string, values []interface{}) ([]stats.Stat, error) {
 	var st []Stat
-	q := fmt.Sprintf(
-		`SELECT %[1]s as name, 
-		 count(%[1]s) as count 
-		 FROM searches
-		 WHERE %[2]s
-		 GROUP BY %[1]s;`, column, query)
-	err := s.db.Select(&st, q, values...)
-	if err != nil {
-		return nil, err
+	if len(query) == 0 {
+		q := fmt.Sprintf(
+			`SELECT %[1]s as name, 
+			 count(%[1]s) as count 
+			 FROM searches
+			 GROUP BY %[1]s;`, column)
+		err := s.db.Select(&st, q)
+		if err != nil {
+			return nil, err
+		}
 	}
+
+	if len(query) > 0 {
+		q := fmt.Sprintf(
+			`SELECT %[1]s as name, 
+			 count(%[1]s) as count 
+			 FROM searches
+			 WHERE %[2]s
+			 GROUP BY %[1]s;`, column, query)
+		err := s.db.Select(&st, q, values...)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	var r []stats.Stat
 	for _, stat := range st {
 		sStat := stats.Stat{
@@ -89,17 +172,18 @@ func (s *Storage) StoreSearch(search ukpolice.Search) error {
 	store.Gender = search.Gender
 	store.OutcomeLinkedToObject = search.OutcomeLinkedToObject
 	store.ObjectOfSearch = normalizeObjectOfSearch(search.ObjectOfSearch)
-	// store.Legislation = search.Legislation
+	store.Legislation = normalizeLegislation(search.Legislation)
 	store.Outcome.SearchHappened = search.Outcome.SearchHappened
 	store.Outcome.Desc = normalizeOutcomes(search.Outcome.Desc, search.Outcome.SearchHappened)
 
 	insert := fmt.Sprintf(`
 		INSERT INTO searches
 		(force, time, age_range, ethnicity, search_happened, outcome,
-		gender, outcome_linked_to_object, object_of_search)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`)
+		gender, outcome_linked_to_object, object_of_search, legislation)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`)
 	_, err := s.db.Exec(insert, store.Force, store.Time, store.AgeRange,
 		store.Ethnicity, store.Outcome.SearchHappened, store.Outcome.Desc,
-		store.Gender, store.OutcomeLinkedToObject, store.ObjectOfSearch)
+		store.Gender, store.OutcomeLinkedToObject, store.ObjectOfSearch,
+		store.Legislation)
 	return err
 }

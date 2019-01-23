@@ -27,6 +27,7 @@ docker: clean ; $(info $(M) building docker image...)
 .PHONY: frontend
 frontend: ; $(info $(M) building web frontend ui...)	     
 	$Q npm install --prefix $(FRONTEND) \
+	   && npm rebuild node-sass \
 	   && npm run build --prefix $(FRONTEND)
 
 # Targets for go app -----------------------------------------------------------

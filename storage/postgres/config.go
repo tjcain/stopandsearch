@@ -18,5 +18,6 @@ const create = `
 		outcome text,
 		gender text,
 		outcome_linked_to_object boolean,
-		object_of_search text
+		object_of_search text,
+		legislation text
 	);`

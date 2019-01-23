@@ -30,9 +30,9 @@
             in seeing the information for your police force displayed please
             <router-link to="/contact">contact</router-link> me.
           </p>
-          <h3>Something broke, or doesn't work propely!</h3>
+          <h3>Something broke, or doesn't work properly!</h3>
           <p>
-            Unforunately there may be bugs, if you find one please consider
+            Unfortunately there may be bugs, if you find one please consider
             <router-link to="/contact">letting me know</router-link>, or
             create an issue on
             <a href="https://github.com/tjcain/stopandsearch/issues">github</a>.

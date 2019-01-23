@@ -2,7 +2,8 @@
     "db": {
         "name": "postgres",
         "username": "postgres",
-        "password": "postgres"
+        "password": "postgres",
+        "host": "db"
     }, 
 
     "env": "development"

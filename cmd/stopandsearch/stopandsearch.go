@@ -24,6 +24,9 @@ func main() {
 		log.Fatalln("Error reading config:", err)
 	}
 
+	log.Println("waiting for postgres")
+	time.Sleep(10 * time.Second)
+
 	db, err := postgres.New(c.DB.Username, c.DB.Password, c.DB.Name, c.DB.Host)
 	if err != nil {
 		log.Fatalln("Db setup failed:", err)
@@ -35,6 +38,7 @@ func main() {
 	fetch := fetch.NewService(db, client)
 
 	// create tables
+	log.Println("Starting Data Fetch")
 	fetch.CreateTables()
 
 	if err := fetch.UpdateData(); err != nil {
@@ -45,6 +49,7 @@ func main() {
 	stats := stats.NewService(db)
 
 	// set up router
+	log.Println("starting web server")
 	r := rest.Handler(stats)
 	if err := http.ListenAndServe(":4000", r); err != nil {
 		log.Fatalln(err)

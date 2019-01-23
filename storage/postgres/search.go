@@ -29,6 +29,7 @@ type Search struct {
 	Gender                string `json:"gender,omitempty" db:"gender,omitempty"`
 	OutcomeLinkedToObject bool   `json:"outcome_linked_to_object,omitempty" db:"outcome_linked_to_object,omitempty"`
 	ObjectOfSearch        string `json:"object_of_search,omitempty" db:"object_of_search,omitempty"`
+	Legislation           string `json:"legislation,omitempty" db:"legislation"`
 }
 
 func generateID(force, monthYear string) string {
@@ -108,6 +109,21 @@ func normalizeObjectOfSearch(object string) string {
 		return "Going equipped"
 	case object == "Offensive weapons":
 		return "Offensive weapons"
+	default:
+		return "Other"
+	}
+}
+
+func normalizeLegislation(legislation string) string {
+	switch {
+	case strings.Contains(legislation, "section 60"):
+		return "Section 60"
+	case strings.Contains(legislation, "section 1"):
+		return "PACE"
+	case strings.Contains(legislation, "section 47"):
+		return "Firearms Act"
+	case strings.Contains(legislation, "section 23"):
+		return "Misuse of Drugs Act"
 	default:
 		return "Other"
 	}

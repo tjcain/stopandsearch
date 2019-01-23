@@ -1,17 +1,23 @@
 <template>
-  <div>
+<div>
+  <div class="loading" v-if="!loaded">
+    <b-loading :is-full-page="false" :active="!loaded"></b-loading>
+  </div>
+  <div v-else>
     <div class="columns">
-      <div class="column is-2 has-background-light">
-        <the-side-bar @update-query-string="fetchData"/>
+      <div class="column is-3">
+        <the-side-bar/>
       </div>
 
       <!--  -->
-      <div class="column is-10 is-12-touch has-background-light">
-        <the-info-boxes :queryParams="query"/>
-        <the-graphs :queryParams="query"/>
+      <div class="column is-9">
+        <the-info-boxes/>
+
+        <the-graphs />
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -25,15 +31,24 @@ export default {
     TheGraphs,
     TheInfoBoxes
   },
-  data() {
-    return {
-      query: []
-    };
+  computed: {
+    loaded() {
+      return this.$store.state.loaded;
+    },
+    data() {
+      return this.$store.state.searchData;
+    },
+    getQueryString() {
+      return this.$store.getters.getQueryString;
+    },
+    age() {
+      return this.$store.getters.getAgeRangeData;
+    }
   },
-  computed: {},
-  methods: {
-    fetchData(e) {
-      this.query = e;
+  watch: {
+    getQueryString() {
+      this.$store.dispatch("fetchCount", this.getQueryString);
+      this.$store.dispatch("fetchSearchData", this.getQueryString);
     }
   }
 };
@@ -45,5 +60,9 @@ export default {
 }
 .graph {
   height: 40vh;
+}
+.loading {
+  min-height: 60vh;
+  position: relative;
 }
 </style>
